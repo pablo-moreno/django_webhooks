@@ -1,6 +1,6 @@
 import subprocess
 from django.core.management.base import BaseCommand
-from apps.models import Application
+from apps.models import Application, Deploy
 
 
 class Command(BaseCommand):
@@ -14,12 +14,17 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        print('Running command')
+        deploy = Deploy()
+        app = Application.objects.get(repository=options.get('app'))
+        deploy.app = app
+        deploy.status = 'DNG'
         try:
-            print('Running command')
-            webhook = options.get('webhook')
-            app = Application.objects.get(repository=options.get('app'))
-            result = subprocess.run(['sh', app.deploy_script])
+            result = subprocess.run(['ls', '-la'])
+            # result = subprocess.run(['bash', app.deploy_script])
+            deploy.status = 'DONE'
             return result
         except KeyError:
+            deploy.status = 'KO'
             print('Error deploying the app -- You have not specified the required --app parameter!')
             return result
