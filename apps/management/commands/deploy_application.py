@@ -14,14 +14,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        print('Running command')
         deploy = Deploy()
         app = Application.objects.get(repository=options.get('app'))
         deploy.app = app
         deploy.status = 'DNG'
+
         try:
-            result = subprocess.run(['ls', '-la'])
-            # result = subprocess.run(['bash', app.deploy_script])
+            result = subprocess.run(['bash', app.deploy_script])
             deploy.status = 'DONE'
             return result
         except KeyError:
