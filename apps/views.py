@@ -1,7 +1,9 @@
+import sys
+from io import StringIO
+from django.core.management import call_command
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from django.core.management import call_command
 from apps.models import WebHook
 
 
@@ -11,7 +13,10 @@ class WebhookHandler(APIView):
         webhook.save()
 
         if webhook.type == 'release':
-            result = call_command('deploy_application', app=webhook.url)
-            print(result)
+            out = StringIO()
+            sys.stdout = out
+            call_command('deploy_application', app=webhook.repository, app_version=webhook.version, stdout=out)
 
-        return Response(status=HTTP_200_OK)
+        return Response({
+            'status': HTTP_200_OK,
+        }, status=HTTP_200_OK)

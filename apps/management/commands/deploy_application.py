@@ -7,11 +7,8 @@ class Command(BaseCommand):
     help = 'Perform the deploy of a specified application'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--app',
-            type=str,
-            help='Application github name'
-        )
+        parser.add_argument('--app', type=str, help='Application github name')
+        parser.add_argument('--app_version', type=str, help='New version to be deployed')
 
     def handle(self, *args, **options):
         deploy = Deploy()
@@ -19,11 +16,15 @@ class Command(BaseCommand):
         deploy.app = app
         deploy.status = 'DNG'
 
-        try:
-            result = subprocess.run(['bash', app.deploy_script])
+        # Run deploy script
+        command = ['bash', app.deploy_script]
+        result = subprocess.run(command)
+
+        if result.returncode == 0:
             deploy.status = 'DONE'
-            return result
-        except KeyError:
+            app.version = options.get('app_version', None)
+            app.save()
+        else:
             deploy.status = 'KO'
-            print('Error deploying the app -- You have not specified the required --app parameter!')
-            return result
+
+        deploy.save()

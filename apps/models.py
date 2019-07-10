@@ -5,8 +5,11 @@ class Application(models.Model):
     name = models.CharField(max_length=32)
     description = models.CharField(max_length=240, blank=True, null=True)
     repository = models.URLField(unique=True)
-    deploy_script = models.FilePathField(blank=True, null=True)
+    deploy_script = models.CharField(max_length=200, blank=True, null=True)
     version = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.name}@{self.version}'
 
 
 class WebHook(models.Model):
