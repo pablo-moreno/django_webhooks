@@ -40,11 +40,16 @@ class WebHook(models.Model):
 
 
 class Deploy(models.Model):
+    PEN = 'PEN'
+    DNG = 'DNG'
+    OK = 'OK'
+    KO = 'KO'
+
     DEPLOY_STATUSES = (
-        ('PEN', 'PENDING'),
-        ('DNG', 'DOING'),
-        ('OK', 'DONE'),
-        ('KO', 'ERROR'),
+        (PEN, 'PENDING'),
+        (DNG, 'DOING'),
+        (OK, 'DONE'),
+        (KO, 'ERROR'),
     )
 
     app = models.ForeignKey(Application, on_delete=models.CASCADE, null=True)

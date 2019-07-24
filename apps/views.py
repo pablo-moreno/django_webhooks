@@ -20,7 +20,7 @@ class WebhookHandler(APIView):
         webhook = WebHook.from_request(request)
         webhook.save()
 
-        if webhook.type == 'release':
+        if webhook.type == 'release' and webhook.action == 'published':
             return AfterResponseAction({
                 'status': HTTP_200_OK,
             }, after_response_action=self.release(webhook))

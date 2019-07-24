@@ -14,17 +14,17 @@ class Command(BaseCommand):
         deploy = Deploy()
         app = Application.objects.get(repository=options.get('app'))
         deploy.app = app
-        deploy.status = 'DNG'
+        deploy.status = Deploy.DNG
 
         # Run deploy script
         command = ['bash', app.deploy_script]
         result = subprocess.run(command)
 
         if result.returncode == 0:
-            deploy.status = 'DONE'
+            deploy.status = Deploy.OK
             app.version = options.get('app_version', None)
             app.save()
         else:
-            deploy.status = 'KO'
+            deploy.status = Deploy.KO
 
         deploy.save()
