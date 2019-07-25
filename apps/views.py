@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from apps.models import WebHook
 from apps.utils import AfterResponseAction
+import logging
+
+logger = logging.getLogger('webhooks')
 
 
 class WebhookHandler(APIView):
@@ -19,6 +22,8 @@ class WebhookHandler(APIView):
     def post(self, request):
         webhook = WebHook.from_request(request)
         webhook.save()
+
+        logger.info(f'New webhook received from {webhook.repository}')
 
         if webhook.type == 'release' and webhook.action == 'published':
             return AfterResponseAction({

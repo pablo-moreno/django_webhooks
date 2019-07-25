@@ -144,4 +144,6 @@ db.sqlite3
 
 static/
 
+logs/
+
 # End of https://www.gitignore.io/api/django
