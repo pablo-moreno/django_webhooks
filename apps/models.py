@@ -3,6 +3,9 @@ import json
 from django.db import models
 from string import digits, ascii_letters
 from random import choice
+import logging
+
+logger = logging.getLogger('webhooks')
 
 
 class Secret(models.Model):
@@ -10,15 +13,18 @@ class Secret(models.Model):
     secret = models.CharField(max_length=32, blank=True, null=True, db_index=True)
 
     def verify_signature(self, request):
-        signature = request.headers.get('HTTP_X_HUB_SIGNATURE', None)
+        signature = request.headers.get('X-Hub-Signature', None)
 
         if not signature:
             raise Exception('Signature not found')
 
         sha_name, sign = signature.split('=')
-        secret = self.secret.encode('utf-8')
-        payload = json.dumps(request.data).encode('utf-8')
+        secret = self.secret.encode()
+        payload = json.dumps(request.data, separators=(',', ':')).encode()
         mac = hmac(secret, msg=payload, digestmod='sha1').hexdigest()
+
+        logger.info(f'mac: {mac}')
+        logger.info(f'sign: {sign}')
 
         return compare_digest(mac, sign)
 
