@@ -1,7 +1,9 @@
-import hmac
+from hmac import new as hmac, compare_digest
+import json
 from django.db import models
 from string import digits, ascii_letters
 from random import choice
+from hashlib import sha1
 
 
 class Secret(models.Model):
@@ -15,9 +17,11 @@ class Secret(models.Model):
             raise Exception('Signature not found')
 
         sha_name, sign = signature.split('=')
-        mac = hmac.new(self.secret, msg=request.data, digestmod='sha1')
+        secret = self.secret.encode('utf-8')
+        payload = json.dumps(request.data).encode('utf-8')
+        mac = hmac(secret, msg=payload, digestmod='sha1').hexdigest()
 
-        return hmac.compare_digest(mac.hexdigest(), sign)
+        return compare_digest(mac, sign)
 
     def save(self, *args, **kwargs):
         if not self.secret:
