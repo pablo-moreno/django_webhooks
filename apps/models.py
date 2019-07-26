@@ -3,7 +3,6 @@ import json
 from django.db import models
 from string import digits, ascii_letters
 from random import choice
-from hashlib import sha1
 
 
 class Secret(models.Model):
@@ -11,7 +10,7 @@ class Secret(models.Model):
     secret = models.CharField(max_length=32, blank=True, null=True, db_index=True)
 
     def verify_signature(self, request):
-        signature = request.headers.get('X-Hub-Signature', None)
+        signature = request.headers.get('HTTP_X_HUB_SIGNATURE', None)
 
         if not signature:
             raise Exception('Signature not found')
