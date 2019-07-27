@@ -3,8 +3,9 @@ from io import StringIO
 from django.core.management import call_command
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_200_OK
 from apps.models import WebHook
+from apps.permissions import HasVerifiedSignature
 from apps.utils import AfterResponseAction
 import logging
 
@@ -12,6 +13,8 @@ logger = logging.getLogger('webhooks')
 
 
 class WebhookHandler(APIView):
+    permission_classes = (HasVerifiedSignature, )
+
     def release(self, webhook):
         def run_command():
             out = StringIO()
@@ -20,14 +23,7 @@ class WebhookHandler(APIView):
         return run_command
 
     def post(self, request):
-        try:
-            webhook = WebHook.from_request(request)
-        except Exception as e:
-            logger.error(str(e))
-            return Response({
-                'status': HTTP_403_FORBIDDEN,
-                'error': str(e)
-            }, status=HTTP_403_FORBIDDEN)
+        webhook = WebHook.from_request(request)
         webhook.save()
 
         logger.info(f'New webhook received from {webhook.repository}')

@@ -1,37 +1,7 @@
-from hmac import new as hmac, compare_digest
-import json
-from django.db import models
-from string import digits, ascii_letters
-from random import choice
 import logging
+from django.db import models
 
 logger = logging.getLogger('webhooks')
-
-
-class Secret(models.Model):
-    app = models.CharField(max_length=32)
-    secret = models.CharField(max_length=32, blank=True, null=True, db_index=True)
-
-    def verify_signature(self, request):
-        signature = request.headers.get('X-Hub-Signature', None)
-
-        if not signature:
-            raise Exception('Signature not found')
-
-        sha_name, sign = signature.split('=')
-        secret = self.secret.encode()
-        payload = json.dumps(request.data, separators=(',', ':')).encode()
-        mac = hmac(secret, msg=payload, digestmod='sha1').hexdigest()
-
-        logger.info(f'mac: {mac}')
-        logger.info(f'sign: {sign}')
-
-        return compare_digest(mac, sign)
-
-    def save(self, *args, **kwargs):
-        if not self.secret:
-            self.secret = ''.join([choice(digits + ascii_letters) for _ in range(0, 32)])
-        super().save(*args, **kwargs)
 
 
 class Application(models.Model):
