@@ -35,8 +35,7 @@ def verify_signature(request: Request) -> bool:
 
 class AfterResponseAction(Response):
     def __init__(self, *args, **kwargs):
-        self.after_response_action = kwargs.get('after_response_action', None)
-        kwargs.pop('after_response_action')
+        self.after_response_action = kwargs.pop('after_response_action', None)
         super().__init__(*args, **kwargs)
 
     def close(self):
