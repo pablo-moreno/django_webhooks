@@ -41,6 +41,9 @@ class WebHook(models.Model):
 
         return webhook
 
+    def __str__(self):
+        return f'({self.type}) ({self.action}): {self.repository}'
+
 
 class Deploy(models.Model):
     PEN = 'PEN'
@@ -58,3 +61,6 @@ class Deploy(models.Model):
     app = models.ForeignKey(Application, on_delete=models.CASCADE, null=True)
     started_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=DEPLOY_STATUSES, max_length=16)
+
+    def __str__(self):
+        return f'{self.app.name} - {self.status}'

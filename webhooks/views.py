@@ -4,9 +4,9 @@ from django.core.management import call_command
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from apps.models import WebHook
-from apps.permissions import HasVerifiedSignature
-from apps.utils import AfterResponseAction
+from .models import WebHook
+from .permissions import HasVerifiedSignature
+from .utils import AfterResponseAction
 import logging
 
 logger = logging.getLogger('webhooks')

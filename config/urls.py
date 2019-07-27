@@ -18,6 +18,6 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('', include('apps.urls')),
+    path('', include('webhooks.urls')),
     path('admin/', admin.site.urls),
 ]

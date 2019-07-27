@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.views import WebhookHandler
+from webhooks.views import WebhookHandler
 
 
 urlpatterns = [

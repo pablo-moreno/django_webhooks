@@ -1,6 +1,6 @@
 import subprocess
 from django.core.management.base import BaseCommand
-from apps.models import Application, Deploy
+from webhooks.models import Application, Deploy
 import logging
 
 logger = logging.getLogger('deploy_command')
