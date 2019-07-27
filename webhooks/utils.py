@@ -1,4 +1,3 @@
-import logging
 from hmac import new as hmac, compare_digest
 from django.conf import settings
 from rest_framework.response import Response
