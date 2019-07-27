@@ -3,8 +3,6 @@ from hmac import new as hmac, compare_digest
 from django.conf import settings
 from rest_framework.response import Response
 
-logger = logging.getLogger('webhooks')
-
 
 def verify_signature(request):
     secret = getattr(settings, 'GITHUB_SECRET').encode()
@@ -16,9 +14,6 @@ def verify_signature(request):
     sha_name, sign = signature.split('=')
     payload = request.body
     mac = hmac(secret, msg=payload, digestmod='sha1').hexdigest()
-
-    logger.info(f'mac: {mac}')
-    logger.info(f'sign: {sign}')
 
     return compare_digest(mac, sign)
 
