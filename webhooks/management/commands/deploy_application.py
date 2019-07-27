@@ -24,7 +24,6 @@ class Command(BaseCommand):
 
         # Run deploy script
         try:
-
             command = ['bash', app.deploy_script]
             result = subprocess.run(command)
 

@@ -5,5 +5,5 @@ from webhooks.utils import verify_signature
 
 
 class HasVerifiedSignature(BasePermission):
-    def has_permission(self, request: Request, view: View):
+    def has_permission(self, request: Request, view: View) -> bool:
         return verify_signature(request)

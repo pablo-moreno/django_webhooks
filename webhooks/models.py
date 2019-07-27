@@ -26,6 +26,11 @@ class WebHook(models.Model):
 
     @staticmethod
     def from_request(request):
+        """
+            Parses a request and returns a WebHook instance
+        :param request:
+        :return:
+        """
         webhook = WebHook()
         webhook_type = request.META.get('HTTP_X_GITHUB_EVENT', None)
         data = request.data

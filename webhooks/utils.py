@@ -1,11 +1,26 @@
 from hmac import new as hmac, compare_digest
 from django.conf import settings
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 
-def verify_signature(request):
-    secret = getattr(settings, 'GITHUB_SECRET').encode()
+def verify_signature(request: Request) -> bool:
+    """
+        Return whether or not the signature is verified.
+        If the GITHUB_SECRET is not specified in app settings,
+        it doesn't verify anything and accepts the request.
+        This is obviously not recommended for security reasons but
+        allows the user not to set it up.
+    :param request: Github request
+    :return:
+    """
+    secret = getattr(settings, 'GITHUB_SECRET')
+
+    # Does not verify anything and accept the request
+    if not secret:
+        return True
+
     signature = request.headers.get('X-Hub-Signature', None)
 
     if not signature:
@@ -13,7 +28,7 @@ def verify_signature(request):
 
     sha_name, sign = signature.split('=')
     payload = request.body
-    mac = hmac(secret, msg=payload, digestmod='sha1').hexdigest()
+    mac = hmac(secret.encode(), msg=payload, digestmod='sha1').hexdigest()
 
     return compare_digest(mac, sign)
 
