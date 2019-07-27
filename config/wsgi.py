@@ -1,5 +1,5 @@
 """
-WSGI config for github_webhooks project.
+WSGI config.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

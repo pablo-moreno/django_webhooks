@@ -1,6 +1,7 @@
 from hmac import new as hmac, compare_digest
 from django.conf import settings
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 
 
 def verify_signature(request):
@@ -26,5 +27,5 @@ class AfterResponseAction(Response):
     def close(self):
         super().close()
 
-        if self.status_code == 200 and callable(self.after_response_action):
+        if self.status_code == HTTP_200_OK and callable(self.after_response_action):
             self.after_response_action()
