@@ -26,12 +26,6 @@ class WebHook(models.Model):
 
     @staticmethod
     def from_request(request):
-        secret = Secret.objects.get(app='Github')
-        verified = secret.verify_signature(request)
-
-        if not verified:
-            raise Exception('Invalid signature')
-
         webhook = WebHook()
         webhook_type = request.META.get('HTTP_X_GITHUB_EVENT', None)
         data = request.data
