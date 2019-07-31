@@ -120,6 +120,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Logging
 
+LOGS_DIRECTORY = 'logs'
+LOGS_FILENAME = os.path.join(LOGS_DIRECTORY, 'webhooks.log')
+
+if LOGS_DIRECTORY not in os.listdir(BASE_DIR):
+    os.mkdir('logs')
+
+    with open(LOGS_FILENAME, 'w'):
+        print('Created log file')
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -150,7 +159,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'logs/webhooks.log',
+            'filename': LOGS_FILENAME,
             'when': 'D',
             'interval': 1,
             'backupCount': 10,
