@@ -6,9 +6,9 @@ bind = '0.0.0.0:4567'
 backlog = 2048
 
 workers = multiprocessing.cpu_count() * 2 + 1
-worker_connections = 1000
+threads = 50
 timeout = 15
-max_requests = 50000
+max_requests = 1000
 
 
 def pre_exec(server):
