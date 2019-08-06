@@ -1,6 +1,6 @@
-# Github Webhooks
+# Django Webhooks
 
-[![Build Status](https://travis-ci.com/pablo-moreno/github_webhooks.svg?branch=master)](https://travis-ci.com/pablo-moreno/github_webhooks)
+[![Build Status](https://travis-ci.com/pablo-moreno/django_webhooks.svg?branch=master)](https://travis-ci.com/pablo-moreno/django_webhooks)
 
 
 Django application to perform automatic application deploys using Github Webhooks.
