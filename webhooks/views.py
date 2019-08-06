@@ -6,16 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from .models import WebHook
-from .permissions import HasVerifiedSignature
+from .permissions import HasVerifiedSignature, HasGitlabValidSecret
 from .utils import AfterResponseAction
 import logging
 
 logger = logging.getLogger('webhooks')
 
 
-class WebhookHandler(APIView):
-    permission_classes = (HasVerifiedSignature, )
-
+class DeployAPIView(APIView):
     def release(self, webhook: WebHook) -> callable:
         def run_command():
             out = StringIO()
@@ -23,8 +21,12 @@ class WebhookHandler(APIView):
             call_command('deploy_application', app=webhook.repository, app_version=webhook.version, stdout=out)
         return run_command
 
+
+class GithubWebhookHandler(DeployAPIView):
+    permission_classes = (HasVerifiedSignature, )
+
     def post(self, request: Request) -> Response:
-        webhook = WebHook.from_request(request)
+        webhook = WebHook.from_github(request)
         webhook.save()
 
         logger.info(f'New webhook received from {webhook.repository}')
@@ -37,3 +39,8 @@ class WebhookHandler(APIView):
         return Response({
             'status': HTTP_200_OK,
         }, status=HTTP_200_OK)
+
+
+class GitlabWebhookHandler(DeployAPIView):
+    permission_classes = (HasGitlabValidSecret, )
+

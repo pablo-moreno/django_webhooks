@@ -1,5 +1,6 @@
 import logging
 from django.db import models
+from rest_framework.request import Request
 
 logger = logging.getLogger('webhooks')
 
@@ -25,9 +26,9 @@ class WebHook(models.Model):
     prerelease = models.BooleanField(default=True)
 
     @staticmethod
-    def from_request(request):
+    def from_github(request):
         """
-            Parses a request and returns a WebHook instance
+            Parses a Github request and returns a WebHook instance
         :param request:
         :return:
         """
@@ -45,6 +46,15 @@ class WebHook(models.Model):
             webhook.prerelease = data.get('release', {}).get('prerelease', True)
 
         return webhook
+
+    @staticmethod
+    def from_gitlab(request: Request) -> 'WebHook':
+        """
+            Parses a Gitlab request and returns a WebHook instance
+        :param request:
+        :return:
+        """
+        return WebHook()
 
     def __str__(self):
         return f'({self.type}) ({self.action}): {self.repository}'

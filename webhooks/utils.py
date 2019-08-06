@@ -1,4 +1,6 @@
 from hmac import new as hmac, compare_digest
+from string import ascii_letters, digits
+from random import choice
 from django.conf import settings
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -31,6 +33,19 @@ def verify_signature(request: Request) -> bool:
     mac = hmac(secret.encode(), msg=payload, digestmod='sha1').hexdigest()
 
     return compare_digest(mac, sign)
+
+
+def verify_gitlab_secret(request: Request) ->bool:
+    secret = getattr(settings, 'GITHUB_SECRET')
+    gitlab_header = request.headers.get('X-Gitlab-Token', None)
+
+    return gitlab_header == secret
+
+
+def generate_random_string(char_number):
+    return ''.join([
+        choice(ascii_letters + digits) for _ in range(0, char_number)
+    ])
 
 
 class AfterResponseAction(Response):

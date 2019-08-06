@@ -1,7 +1,8 @@
 from django.urls import path
-from webhooks.views import WebhookHandler
+from webhooks.views import GithubWebhookHandler, GitlabWebhookHandler
 
 
 urlpatterns = [
-    path('', WebhookHandler.as_view(), name='deploy-app'),
+    path('github', GithubWebhookHandler.as_view(), name='github-webhook-handler'),
+    path('gitlab', GitlabWebhookHandler.as_view(), name='gitlab-webhook-handler'),
 ]

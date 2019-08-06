@@ -176,3 +176,4 @@ LOGGING = {
 }
 
 GITHUB_SECRET = env.get_value('GITHUB_SECRET', default='')
+GITLAB_SECRET = env.get_value('GITLAB_SECRET', default='')

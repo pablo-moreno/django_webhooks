@@ -1,5 +1,6 @@
 import os
 import json
+from django.urls import reverse
 from rest_framework.test import APITestCase
 from webhooks.models import Application
 
@@ -29,11 +30,11 @@ class TestGithubWebhooks(APITestCase):
         }
 
     def test_github_webhook_response_200(self):
-        response = self.client.post('/', data=self.fixture, format='json', **self.headers)
+        response = self.client.post(reverse('github-webhook-handler'), data=self.fixture, format='json', **self.headers)
         self.assertEqual(response.status_code, 200)
 
     def test_executes_deploy_script(self):
-        response = self.client.post('/', data=self.fixture, format='json', **self.headers)
+        response = self.client.post(reverse('github-webhook-handler'), data=self.fixture, format='json', **self.headers)
         self.assertEqual(response.status_code, 200)
         with open('test.txt') as f:
             file_content = f.read()
