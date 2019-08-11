@@ -1,11 +1,13 @@
 from hmac import new as hmac, compare_digest
+from string import ascii_letters, digits
+from random import choice
 from django.conf import settings
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 
-def verify_signature(request: Request) -> bool:
+def verify_github_signature(request: Request) -> bool:
     """
         Return whether or not the signature is verified.
         If the GITHUB_SECRET is not specified in app settings,
@@ -13,7 +15,7 @@ def verify_signature(request: Request) -> bool:
         This is obviously not recommended for security reasons but
         allows the user not to set it up.
     :param request: Github request
-    :return:
+    :return: True or False
     """
     secret = getattr(settings, 'GITHUB_SECRET')
 
@@ -31,6 +33,24 @@ def verify_signature(request: Request) -> bool:
     mac = hmac(secret.encode(), msg=payload, digestmod='sha1').hexdigest()
 
     return compare_digest(mac, sign)
+
+
+def verify_gitlab_secret(request: Request) -> bool:
+    """
+        Compares X-Gitlab-Token header to GITLAB_SECRET
+    :param request:
+    :return: True or False
+    """
+    secret = getattr(settings, 'GITLAB_SECRET')
+    gitlab_header = request.headers.get('X-Gitlab-Token', None)
+
+    return gitlab_header == secret
+
+
+def generate_random_string(char_number):
+    return ''.join([
+        choice(ascii_letters + digits) for _ in range(0, char_number)
+    ])
 
 
 class AfterResponseAction(Response):
