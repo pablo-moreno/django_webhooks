@@ -16,7 +16,7 @@ python3
 
 Clone the repo:
 ```bash
-git clone https://github.com/pablo-moreno/github_webhooks.git
+git clone https://github.com/pablo-moreno/django_webhooks.git
 ```
 
 Create .env file and setup your environment variables:
